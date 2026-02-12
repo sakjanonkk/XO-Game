@@ -64,6 +64,7 @@
 }
 
 [data-theme="dark"] .bg-white,
+[data-theme="dark"] .bg-white\/50,
 [data-theme="dark"] .bg-white\/70,
 [data-theme="dark"] .bg-white\/80 {
   background-color: var(--color-surface) !important;
@@ -94,6 +95,7 @@
 }
 
 [data-theme="dark"] .border-slate-200,
+[data-theme="dark"] .border-slate-200\/60,
 [data-theme="dark"] .border-slate-200\/80,
 [data-theme="dark"] .border-slate-200\/50 {
   border-color: var(--color-border) !important;
@@ -101,8 +103,13 @@
 
 [data-theme="dark"] .bg-slate-50,
 [data-theme="dark"] .bg-slate-100,
-[data-theme="dark"] .bg-slate-100\/60 {
+[data-theme="dark"] .bg-slate-100\/60,
+[data-theme="dark"] .bg-slate-100\/80 {
   background-color: rgba(30, 41, 59, 0.6) !important;
+}
+
+[data-theme="dark"] .bg-slate-200 {
+  background-color: #334155 !important;
 }
 
 [data-theme="dark"] .hover\:bg-slate-100:hover,
@@ -169,8 +176,28 @@
 }
 
 [data-theme="dark"] .shadow-sm,
-[data-theme="dark"] .shadow-md {
+[data-theme="dark"] .shadow-md,
+[data-theme="dark"] .shadow-lg {
   --tw-shadow-color: rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .shadow-slate-200\/60 {
+  --tw-shadow-color: rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Feature card hover in dark mode */
+[data-theme="dark"] .hover\:border-indigo-200:hover {
+  border-color: rgba(99, 102, 241, 0.4) !important;
+}
+
+[data-theme="dark"] .hover\:shadow-indigo-100\/40:hover {
+  --tw-shadow-color: rgba(99, 102, 241, 0.1) !important;
+}
+
+/* Footer dark */
+[data-theme="dark"] footer {
+  background-color: rgba(15, 23, 42, 0.5) !important;
+  border-color: var(--color-border) !important;
 }
 
 /* Button secondary variant in dark mode */
