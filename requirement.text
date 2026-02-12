@@ -1,0 +1,24 @@
+- Initialize project using NextJS Latest Version on this directory C:\Work\SyswareAi\XO-Game>
+    - Setup project by read this file C:\Work\SyswareAi\XO-Game\nextjs-llms-full.txt
+    - This is project for my testing about Frontend work at Software company
+        - This is HR Requirement
+            Requirements:
+            - Create a web application for the XO game (Tic-Tac-Toe)
+            - Create a landing page for the XO game
+            - Use Next.js for development
+
+            What we will evaluate:
+            - Code quality and best practices
+            - Project structure
+
+    - This is what i want for this project 
+            - I want to make it intregation with Backend you can use any backend can also use it from next backend
+            - Make website Parallax website
+            - Also think about system design
+            - Do best practice at everything about code and project structure
+            - Make Ui web-design as human made not an full ai generate don't forget about uxui experience
+
+            
+
+
+
