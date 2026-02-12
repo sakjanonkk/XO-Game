@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Gamepad2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 
 export function Navbar() {
   return (
@@ -15,9 +16,12 @@ export function Navbar() {
           XO Game
         </Link>
 
-        <Link href="/game">
-          <Button size="sm">Play Now</Button>
-        </Link>
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          <Link href="/game">
+            <Button size="sm">Play Now</Button>
+          </Link>
+        </div>
       </div>
     </nav>
   );

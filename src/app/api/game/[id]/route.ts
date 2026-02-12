@@ -7,6 +7,7 @@ import {
   getWinningLine,
   isValidMove,
 } from '@/lib/game-engine';
+import { gameEvents } from '@/lib/game-events';
 import { inMemoryGameRepository } from '@/lib/game-repository';
 import type { ApiResponse, Game, MakeMoveRequest, Player } from '@/types/game';
 
@@ -73,6 +74,7 @@ export async function PUT(
   // Check for game end after player's move
   if (game.status !== 'playing') {
     inMemoryGameRepository.update(game);
+    gameEvents.emit(id, game);
     return NextResponse.json({ data: game });
   }
 
@@ -88,6 +90,7 @@ export async function PUT(
   }
 
   inMemoryGameRepository.update(game);
+  gameEvents.emit(id, game);
   return NextResponse.json({ data: game });
 }
 

@@ -22,12 +22,177 @@
   --shadow-game: 0 8px 32px rgba(79, 70, 229, 0.08);
 }
 
+/* ─── Dark Theme ─── */
+[data-theme="dark"] {
+  --color-primary: #818cf8;
+  --color-primary-light: #a5b4fc;
+  --color-primary-dark: #6366f1;
+  --color-accent: #fbbf24;
+  --color-accent-light: #fcd34d;
+  --color-accent-dark: #f59e0b;
+  --color-bg: #0f172a;
+  --color-surface: #1e293b;
+  --color-text-primary: #f1f5f9;
+  --color-text-secondary: #94a3b8;
+  --color-text-muted: #64748b;
+  --color-border: #334155;
+  --color-border-light: #1e293b;
+
+  --shadow-game: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
 /* ─── Tailwind v4 Theme ─── */
 @theme inline {
   --color-background: var(--color-bg);
   --color-foreground: var(--color-text-primary);
   --font-sans: var(--font-body);
   --font-display: var(--font-heading);
+}
+
+/* ─── Dark Mode Overrides ─── */
+[data-theme="dark"] .dark\:bg-slate-900 { background-color: #0f172a; }
+
+/* Override hardcoded white backgrounds in dark mode */
+[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+[data-theme="dark"] header,
+[data-theme="dark"] nav {
+  background-color: rgba(15, 23, 42, 0.8) !important;
+  border-color: var(--color-border) !important;
+}
+
+[data-theme="dark"] .bg-white,
+[data-theme="dark"] .bg-white\/70,
+[data-theme="dark"] .bg-white\/80 {
+  background-color: var(--color-surface) !important;
+}
+
+[data-theme="dark"] .text-slate-900 {
+  color: var(--color-text-primary) !important;
+}
+
+[data-theme="dark"] .text-slate-800 {
+  color: #e2e8f0 !important;
+}
+
+[data-theme="dark"] .text-slate-700 {
+  color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .text-slate-600 {
+  color: var(--color-text-secondary) !important;
+}
+
+[data-theme="dark"] .text-slate-500 {
+  color: var(--color-text-muted) !important;
+}
+
+[data-theme="dark"] .text-slate-400 {
+  color: #64748b !important;
+}
+
+[data-theme="dark"] .border-slate-200,
+[data-theme="dark"] .border-slate-200\/80,
+[data-theme="dark"] .border-slate-200\/50 {
+  border-color: var(--color-border) !important;
+}
+
+[data-theme="dark"] .bg-slate-50,
+[data-theme="dark"] .bg-slate-100,
+[data-theme="dark"] .bg-slate-100\/60 {
+  background-color: rgba(30, 41, 59, 0.6) !important;
+}
+
+[data-theme="dark"] .hover\:bg-slate-100:hover,
+[data-theme="dark"] .hover\:bg-slate-50:hover {
+  background-color: rgba(51, 65, 85, 0.5) !important;
+}
+
+[data-theme="dark"] .hover\:border-slate-300:hover {
+  border-color: #475569 !important;
+}
+
+/* Dark mode for indigo-tinted components */
+[data-theme="dark"] .bg-indigo-50,
+[data-theme="dark"] .bg-indigo-50\/50 {
+  background-color: rgba(99, 102, 241, 0.1) !important;
+}
+
+[data-theme="dark"] .border-indigo-200 {
+  border-color: rgba(99, 102, 241, 0.3) !important;
+}
+
+[data-theme="dark"] .bg-indigo-100 {
+  background-color: rgba(99, 102, 241, 0.15) !important;
+}
+
+[data-theme="dark"] .bg-amber-100 {
+  background-color: rgba(245, 158, 11, 0.15) !important;
+}
+
+/* Parallax grid dark */
+[data-theme="dark"] .parallax-grid {
+  background-image:
+    linear-gradient(rgba(129, 140, 248, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(129, 140, 248, 0.04) 1px, transparent 1px);
+}
+
+/* Skeleton dark */
+[data-theme="dark"] .skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-border) 0%,
+    #334155 50%,
+    var(--color-border) 100%
+  );
+  background-size: 200% 100%;
+}
+
+/* History panel / sidebar dark */
+[data-theme="dark"] .border-slate-100 {
+  border-color: var(--color-border) !important;
+}
+
+[data-theme="dark"] .bg-slate-50\/50 {
+  background-color: rgba(30, 41, 59, 0.5) !important;
+}
+
+[data-theme="dark"] .bg-slate-200\/60 {
+  background-color: rgba(51, 65, 85, 0.6) !important;
+}
+
+/* Shadow overrides for dark mode */
+[data-theme="dark"] .shadow-2xl {
+  --tw-shadow-color: rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="dark"] .shadow-sm,
+[data-theme="dark"] .shadow-md {
+  --tw-shadow-color: rgba(0, 0, 0, 0.3);
+}
+
+/* Button secondary variant in dark mode */
+[data-theme="dark"] .border-slate-200.bg-white {
+  background-color: var(--color-surface) !important;
+  border-color: var(--color-border) !important;
+}
+
+/* Emerald/green success colors dark */
+[data-theme="dark"] .bg-emerald-500 {
+  background-color: #059669 !important;
+}
+
+/* Selection dark */
+[data-theme="dark"] ::selection {
+  background: rgba(129, 140, 248, 0.25);
+  color: #c7d2fe;
+}
+
+/* Smooth body background transition on theme change */
+body {
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 /* ─── Base Styles ─── */

@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import {
   ArrowLeft,
   Clock,
   Loader2,
+  Film,
   RotateCcw,
   Sparkles,
   Users,
@@ -13,12 +14,18 @@ import {
   ChevronDown,
 } from 'lucide-react';
 import { Board } from '@/components/game/board';
+import { MoveTimer } from '@/components/game/move-timer';
+import { ReplayViewer } from '@/components/game/replay-viewer';
 import { ScoreBoard } from '@/components/game/score-board';
 import { GameStatus } from '@/components/game/game-status';
 import { HistoryPanel } from '@/components/game/history-panel';
 import { ShareLink } from '@/components/game/share-link';
 import { Button } from '@/components/ui/button';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
+import { SoundToggle } from '@/components/ui/sound-toggle';
+import { Confetti } from '@/components/ui/confetti';
 import { useGame } from '@/hooks/useGame';
+import { useSound } from '@/hooks/useSound';
 import { cn } from '@/lib/utils';
 import type { AIDifficulty, GameMode, Player } from '@/types/game';
 
@@ -28,7 +35,39 @@ export default function GamePage() {
   const { game, score, isLoading, startGame, makeMove, resetGame, resetScore } =
     useGame({ playerRole });
 
+  const { enabled: soundEnabled, play: playSound, toggleSound } = useSound();
+  const prevStatusRef = useRef(game?.status);
+
+  // Play sound effects when game state changes
+  useEffect(() => {
+    const prevStatus = prevStatusRef.current;
+    const currentStatus = game?.status;
+    prevStatusRef.current = currentStatus;
+
+    if (!prevStatus || prevStatus === currentStatus) return;
+
+    if (currentStatus === 'won') playSound('win');
+    else if (currentStatus === 'draw') playSound('draw');
+  }, [game?.status, playSound]);
+
+  const handleMakeMove = async (position: number) => {
+    playSound('move');
+    await makeMove(position);
+  };
+
+  const handleTimeout = () => {
+    if (!game || game.status !== 'playing') return;
+    const emptyCells = game.board
+      .map((cell, i) => (cell === null ? i : -1))
+      .filter((i) => i !== -1);
+    if (emptyCells.length > 0) {
+      const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+      handleMakeMove(randomCell);
+    }
+  };
+
   const [historyOpen, setHistoryOpen] = useState(false);
+  const [showReplay, setShowReplay] = useState(false);
   const [selectedMode, setSelectedMode] = useState<GameMode>('ai');
   const [selectedDifficulty, setSelectedDifficulty] = useState<AIDifficulty>('hard');
 
@@ -74,14 +113,18 @@ export default function GamePage() {
             XO Game
           </h1>
 
-          <button
-            onClick={() => setHistoryOpen(true)}
-            className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-100 transition-colors"
-            aria-label="Open match history"
-          >
-            <Clock className="h-4 w-4" />
-            <span className="hidden sm:inline">History</span>
-          </button>
+          <div className="flex items-center gap-1">
+            <SoundToggle enabled={soundEnabled} onToggle={toggleSound} />
+            <ThemeToggle />
+            <button
+              onClick={() => setHistoryOpen(true)}
+              className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-100 transition-colors"
+              aria-label="Open match history"
+            >
+              <Clock className="h-4 w-4" />
+              <span className="hidden sm:inline">History</span>
+            </button>
+          </div>
         </div>
       </header>
 
@@ -190,6 +233,15 @@ export default function GamePage() {
               <GameStatus game={game} />
             )}
 
+            {/* Move Timer — key changes each move to reset the countdown */}
+            {game.status === 'playing' && !waitingForOpponent && (
+              <MoveTimer
+                key={game.moves.length}
+                duration={15}
+                onTimeout={handleTimeout}
+              />
+            )}
+
             {/* Board */}
             <div
               className="mx-auto w-full max-w-xs rounded-2xl bg-slate-100/60 p-3 sm:max-w-sm sm:p-4"
@@ -199,7 +251,7 @@ export default function GamePage() {
                 board={game.board}
                 winningLine={game.winningLine}
                 isDisabled={!isMyTurn || isLoading}
-                onCellClick={makeMove}
+                onCellClick={handleMakeMove}
               />
             </div>
 
@@ -217,13 +269,26 @@ export default function GamePage() {
               </span>
             </div>
 
+            {/* Replay viewer */}
+            {isGameFinished && showReplay && (
+              <ReplayViewer game={game} onClose={() => setShowReplay(false)} />
+            )}
+
             {/* Actions */}
             <div className="flex items-center justify-center gap-3">
               {isGameFinished && (
-                <Button onClick={resetGame} disabled={isLoading}>
-                  <RotateCcw className="h-4 w-4" />
-                  Play Again
-                </Button>
+                <>
+                  <Button onClick={resetGame} disabled={isLoading}>
+                    <RotateCcw className="h-4 w-4" />
+                    Play Again
+                  </Button>
+                  {!showReplay && (
+                    <Button variant="ghost" onClick={() => setShowReplay(true)}>
+                      <Film className="h-4 w-4" />
+                      Replay
+                    </Button>
+                  )}
+                </>
               )}
 
               <Button variant="secondary" onClick={handleNewSetup}>
@@ -237,6 +302,9 @@ export default function GamePage() {
 
       {/* History sidebar */}
       <HistoryPanel isOpen={historyOpen} onClose={() => setHistoryOpen(false)} />
+
+      {/* Win celebration */}
+      <Confetti active={game?.status === 'won'} />
     </main>
   );
 }

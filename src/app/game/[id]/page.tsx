@@ -1,13 +1,19 @@
 'use client';
 
-import { useEffect, use } from 'react';
+import { useEffect, useRef, useState, use } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Loader2 } from 'lucide-react';
+import { ArrowLeft, Film, Loader2 } from 'lucide-react';
 import { Board } from '@/components/game/board';
+import { MoveTimer } from '@/components/game/move-timer';
+import { ReplayViewer } from '@/components/game/replay-viewer';
 import { ScoreBoard } from '@/components/game/score-board';
 import { GameStatus } from '@/components/game/game-status';
 import { Button } from '@/components/ui/button';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
+import { SoundToggle } from '@/components/ui/sound-toggle';
+import { Confetti } from '@/components/ui/confetti';
 import { useGame } from '@/hooks/useGame';
+import { useSound } from '@/hooks/useSound';
 
 export default function SharedGamePage({
   params,
@@ -21,9 +27,41 @@ export default function SharedGamePage({
     playerRole: myRole,
   });
 
+  const [showReplay, setShowReplay] = useState(false);
+  const { enabled: soundEnabled, play: playSound, toggleSound } = useSound();
+  const prevStatusRef = useRef(game?.status);
+
   useEffect(() => {
     loadGame(id);
   }, [id, loadGame]);
+
+  // Play sound effects when game state changes
+  useEffect(() => {
+    const prevStatus = prevStatusRef.current;
+    const currentStatus = game?.status;
+    prevStatusRef.current = currentStatus;
+
+    if (!prevStatus || prevStatus === currentStatus) return;
+
+    if (currentStatus === 'won') playSound('win');
+    else if (currentStatus === 'draw') playSound('draw');
+  }, [game?.status, playSound]);
+
+  const handleMakeMove = async (position: number) => {
+    playSound('move');
+    await makeMove(position);
+  };
+
+  const handleTimeout = () => {
+    if (!game || game.status !== 'playing') return;
+    const emptyCells = game.board
+      .map((cell, i) => (cell === null ? i : -1))
+      .filter((i) => i !== -1);
+    if (emptyCells.length > 0) {
+      const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+      handleMakeMove(randomCell);
+    }
+  };
 
   // ── Loading state ──
   if (!game && isLoading) {
@@ -85,9 +123,13 @@ export default function SharedGamePage({
             XO Game
           </h1>
 
-          <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
-            You are O
-          </span>
+          <div className="flex items-center gap-2">
+            <SoundToggle enabled={soundEnabled} onToggle={toggleSound} />
+            <ThemeToggle />
+            <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
+              You are O
+            </span>
+          </div>
         </div>
       </header>
 
@@ -108,6 +150,15 @@ export default function SharedGamePage({
             <GameStatus game={game} />
           )}
 
+          {/* Move Timer — key changes each move to reset the countdown */}
+          {game.status === 'playing' && !waitingForOpponent && (
+            <MoveTimer
+              key={game.moves.length}
+              duration={15}
+              onTimeout={handleTimeout}
+            />
+          )}
+
           {/* Board */}
           <div
             className="mx-auto w-full max-w-xs rounded-2xl bg-slate-100/60 p-3 sm:max-w-sm sm:p-4"
@@ -117,7 +168,7 @@ export default function SharedGamePage({
               board={game.board}
               winningLine={game.winningLine}
               isDisabled={!isMyTurn || isLoading}
-              onCellClick={makeMove}
+              onCellClick={handleMakeMove}
             />
           </div>
 
@@ -131,16 +182,30 @@ export default function SharedGamePage({
             </span>
           </div>
 
+          {/* Replay viewer */}
+          {isGameFinished && showReplay && (
+            <ReplayViewer game={game} onClose={() => setShowReplay(false)} />
+          )}
+
           {/* Play again */}
           {isGameFinished && (
-            <div className="flex items-center justify-center">
+            <div className="flex items-center justify-center gap-3">
               <Link href="/game">
                 <Button>New Game</Button>
               </Link>
+              {!showReplay && (
+                <Button variant="ghost" onClick={() => setShowReplay(true)}>
+                  <Film className="h-4 w-4" />
+                  Replay
+                </Button>
+              )}
             </div>
           )}
         </div>
       </div>
+
+      {/* Win celebration */}
+      <Confetti active={game?.status === 'won'} />
     </main>
   );
 }

@@ -23,14 +23,12 @@ interface UseGameReturn {
 }
 
 interface UseGameOptions {
-  /** When set, enables auto-polling when it's the opponent's turn */
+  /** When set, enables SSE subscription for real-time updates */
   playerRole?: Player | null;
-  /** Polling interval in ms (default: 1500) */
-  pollInterval?: number;
 }
 
 export function useGame(options: UseGameOptions = {}): UseGameReturn {
-  const { playerRole = null, pollInterval = 1500 } = options;
+  const { playerRole = null } = options;
 
   const [game, setGame] = useState<Game | null>(null);
   const [score, setScore] = useState<GameScore>({ x: 0, o: 0, draws: 0 });
@@ -120,44 +118,37 @@ export function useGame(options: UseGameOptions = {}): UseGameReturn {
     setScore({ x: 0, o: 0, draws: 0 });
   }, []);
 
-  // ── Polling for multiplayer ──
-  // When playerRole is set and it's the opponent's turn, poll for updates
+  // ── SSE for multiplayer ──
+  // When playerRole is set, subscribe to real-time updates
   useEffect(() => {
     if (!playerRole) return;
 
     const current = gameRef.current;
     if (!current || current.status !== 'playing') return;
-    if (current.currentPlayer === playerRole) return; // my turn, no polling
 
-    const interval = setInterval(async () => {
+    const unsubscribe = api.subscribeToGame(current.id, (updated) => {
       const prev = gameRef.current;
-      if (!prev || prev.status !== 'playing') return;
+      if (!prev) return;
 
-      try {
-        const updated = await api.getGame(prev.id);
-
-        // Only update if something changed
-        if (JSON.stringify(updated.board) !== JSON.stringify(prev.board) || updated.status !== prev.status) {
-          // Track score if opponent's move ended the game
-          if (updated.status === 'won' && prev.status === 'playing') {
-            setScore((s) => ({
-              ...s,
-              x: updated.winner === 'X' ? s.x + 1 : s.x,
-              o: updated.winner === 'O' ? s.o + 1 : s.o,
-            }));
-          } else if (updated.status === 'draw' && prev.status === 'playing') {
-            setScore((s) => ({ ...s, draws: s.draws + 1 }));
-          }
-
-          setGame(updated);
+      // Only update if something changed
+      if (JSON.stringify(updated.board) !== JSON.stringify(prev.board) || updated.status !== prev.status) {
+        // Track score if opponent's move ended the game
+        if (updated.status === 'won' && prev.status === 'playing') {
+          setScore((s) => ({
+            ...s,
+            x: updated.winner === 'X' ? s.x + 1 : s.x,
+            o: updated.winner === 'O' ? s.o + 1 : s.o,
+          }));
+        } else if (updated.status === 'draw' && prev.status === 'playing') {
+          setScore((s) => ({ ...s, draws: s.draws + 1 }));
         }
-      } catch {
-        // Ignore polling errors silently
-      }
-    }, pollInterval);
 
-    return () => clearInterval(interval);
-  }, [playerRole, pollInterval, game?.currentPlayer, game?.status]);
+        setGame(updated);
+      }
+    });
+
+    return unsubscribe;
+  }, [playerRole, game?.status]);
 
   return {
     game,
