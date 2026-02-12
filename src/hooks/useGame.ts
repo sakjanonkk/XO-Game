@@ -1,12 +1,13 @@
 'use client';
 
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import * as api from '@/lib/api-client';
 import type {
   AIDifficulty,
   Game,
   GameMode,
   GameScore,
+  Player,
 } from '@/types/game';
 
 interface UseGameReturn {
@@ -15,18 +16,34 @@ interface UseGameReturn {
   isLoading: boolean;
   error: string | null;
   startGame: (mode: GameMode, difficulty: AIDifficulty) => Promise<void>;
+  loadGame: (id: string) => Promise<void>;
   makeMove: (position: number) => Promise<void>;
   resetGame: () => void;
   resetScore: () => void;
 }
 
-export function useGame(): UseGameReturn {
+interface UseGameOptions {
+  /** When set, enables auto-polling when it's the opponent's turn */
+  playerRole?: Player | null;
+  /** Polling interval in ms (default: 1500) */
+  pollInterval?: number;
+}
+
+export function useGame(options: UseGameOptions = {}): UseGameReturn {
+  const { playerRole = null, pollInterval = 1500 } = options;
+
   const [game, setGame] = useState<Game | null>(null);
   const [score, setScore] = useState<GameScore>({ x: 0, o: 0, draws: 0 });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const lastModeRef = useRef<GameMode>('pvp');
   const lastDifficultyRef = useRef<AIDifficulty>('hard');
+
+  // Ref to avoid stale closures in polling
+  const gameRef = useRef<Game | null>(null);
+  useEffect(() => {
+    gameRef.current = game;
+  }, [game]);
 
   const startGame = useCallback(
     async (mode: GameMode, difficulty: AIDifficulty) => {
@@ -49,6 +66,21 @@ export function useGame(): UseGameReturn {
     },
     [],
   );
+
+  /** Load an existing game by ID (for joining shared games) */
+  const loadGame = useCallback(async (id: string) => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const existingGame = await api.getGame(id);
+      setGame(existingGame);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Game not found');
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
   const makeMove = useCallback(
     async (position: number) => {
@@ -88,12 +120,52 @@ export function useGame(): UseGameReturn {
     setScore({ x: 0, o: 0, draws: 0 });
   }, []);
 
+  // ── Polling for multiplayer ──
+  // When playerRole is set and it's the opponent's turn, poll for updates
+  useEffect(() => {
+    if (!playerRole) return;
+
+    const current = gameRef.current;
+    if (!current || current.status !== 'playing') return;
+    if (current.currentPlayer === playerRole) return; // my turn, no polling
+
+    const interval = setInterval(async () => {
+      const prev = gameRef.current;
+      if (!prev || prev.status !== 'playing') return;
+
+      try {
+        const updated = await api.getGame(prev.id);
+
+        // Only update if something changed
+        if (JSON.stringify(updated.board) !== JSON.stringify(prev.board) || updated.status !== prev.status) {
+          // Track score if opponent's move ended the game
+          if (updated.status === 'won' && prev.status === 'playing') {
+            setScore((s) => ({
+              ...s,
+              x: updated.winner === 'X' ? s.x + 1 : s.x,
+              o: updated.winner === 'O' ? s.o + 1 : s.o,
+            }));
+          } else if (updated.status === 'draw' && prev.status === 'playing') {
+            setScore((s) => ({ ...s, draws: s.draws + 1 }));
+          }
+
+          setGame(updated);
+        }
+      } catch {
+        // Ignore polling errors silently
+      }
+    }, pollInterval);
+
+    return () => clearInterval(interval);
+  }, [playerRole, pollInterval, game?.currentPlayer, game?.status]);
+
   return {
     game,
     score,
     isLoading,
     error,
     startGame,
+    loadGame,
     makeMove,
     resetGame,
     resetScore,

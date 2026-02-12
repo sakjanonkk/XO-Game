@@ -5,6 +5,7 @@ import Link from 'next/link';
 import {
   ArrowLeft,
   Clock,
+  Loader2,
   RotateCcw,
   Sparkles,
   Users,
@@ -15,20 +16,43 @@ import { Board } from '@/components/game/board';
 import { ScoreBoard } from '@/components/game/score-board';
 import { GameStatus } from '@/components/game/game-status';
 import { HistoryPanel } from '@/components/game/history-panel';
+import { ShareLink } from '@/components/game/share-link';
 import { Button } from '@/components/ui/button';
 import { useGame } from '@/hooks/useGame';
 import { cn } from '@/lib/utils';
-import type { AIDifficulty, GameMode } from '@/types/game';
+import type { AIDifficulty, GameMode, Player } from '@/types/game';
 
 export default function GamePage() {
+  const [playerRole, setPlayerRole] = useState<Player | null>(null);
+
   const { game, score, isLoading, startGame, makeMove, resetGame, resetScore } =
-    useGame();
+    useGame({ playerRole });
+
   const [historyOpen, setHistoryOpen] = useState(false);
   const [selectedMode, setSelectedMode] = useState<GameMode>('ai');
   const [selectedDifficulty, setSelectedDifficulty] = useState<AIDifficulty>('hard');
 
-  const isGameActive = game?.status === 'playing';
+  const isPvpOnline = game?.mode === 'pvp' && playerRole === 'X';
+  const isMyTurn =
+    game?.status === 'playing' &&
+    (isPvpOnline ? game.currentPlayer === 'X' : true);
   const isGameFinished = game?.status === 'won' || game?.status === 'draw';
+  const waitingForOpponent = isPvpOnline && game?.status === 'playing' && game.currentPlayer !== 'X';
+
+  const handleStartGame = async (mode: GameMode, difficulty: AIDifficulty) => {
+    if (mode === 'pvp') {
+      setPlayerRole('X'); // Creator is always X
+    } else {
+      setPlayerRole(null); // AI mode, no polling needed
+    }
+    await startGame(mode, difficulty);
+  };
+
+  const handleNewSetup = () => {
+    setPlayerRole(null);
+    resetScore();
+    window.location.reload();
+  };
 
   return (
     <main className="relative min-h-screen bg-[var(--color-bg)]">
@@ -92,8 +116,8 @@ export default function GamePage() {
                 />
                 <ModeButton
                   icon={<Users className="h-5 w-5" />}
-                  label="PvP"
-                  description="Play with a friend"
+                  label="Online PvP"
+                  description="Share link with a friend"
                   isSelected={selectedMode === 'pvp'}
                   onClick={() => setSelectedMode('pvp')}
                 />
@@ -127,7 +151,7 @@ export default function GamePage() {
             <Button
               size="lg"
               className="w-full animate-pulse-glow"
-              onClick={() => startGame(selectedMode, selectedDifficulty)}
+              onClick={() => handleStartGame(selectedMode, selectedDifficulty)}
               disabled={isLoading}
             >
               <Sparkles className="h-4 w-4" />
@@ -139,11 +163,32 @@ export default function GamePage() {
         {/* Active game */}
         {game && (
           <div className="space-y-6 animate-scale-in">
+            {/* Share link for PvP */}
+            {isPvpOnline && <ShareLink gameId={game.id} />}
+
+            {/* Role badge for PvP */}
+            {isPvpOnline && (
+              <div className="flex justify-center">
+                <span className="rounded-full bg-indigo-100 px-3 py-1 text-xs font-semibold text-indigo-700">
+                  You are X
+                </span>
+              </div>
+            )}
+
             {/* Score */}
             <ScoreBoard score={score} className="justify-center" />
 
             {/* Status */}
-            <GameStatus game={game} />
+            {waitingForOpponent ? (
+              <div className="flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-6 py-3 shadow-sm">
+                <Loader2 className="h-4 w-4 animate-spin text-indigo-500" />
+                <span className="text-sm font-medium text-slate-600">
+                  Waiting for O to play...
+                </span>
+              </div>
+            ) : (
+              <GameStatus game={game} />
+            )}
 
             {/* Board */}
             <div
@@ -153,7 +198,7 @@ export default function GamePage() {
               <Board
                 board={game.board}
                 winningLine={game.winningLine}
-                isDisabled={!isGameActive || isLoading}
+                isDisabled={!isMyTurn || isLoading}
                 onCellClick={makeMove}
               />
             </div>
@@ -161,7 +206,11 @@ export default function GamePage() {
             {/* Game info */}
             <div className="flex items-center justify-center gap-2 text-xs text-slate-400">
               <span className="rounded-full bg-slate-100 px-2.5 py-1">
-                {game.mode === 'ai' ? `AI (${game.aiDifficulty})` : 'Player vs Player'}
+                {game.mode === 'ai'
+                  ? `AI (${game.aiDifficulty})`
+                  : isPvpOnline
+                    ? 'Online PvP'
+                    : 'Player vs Player'}
               </span>
               <span className="rounded-full bg-slate-100 px-2.5 py-1">
                 Move {game.moves.length}
@@ -177,13 +226,7 @@ export default function GamePage() {
                 </Button>
               )}
 
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  resetScore();
-                  window.location.reload();
-                }}
-              >
+              <Button variant="secondary" onClick={handleNewSetup}>
                 <ChevronDown className="h-4 w-4" />
                 New Setup
               </Button>
