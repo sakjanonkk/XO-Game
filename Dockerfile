@@ -17,6 +17,9 @@ COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN pnpm build
 
+# Ensure public dir exists even if empty
+RUN mkdir -p /app/public
+
 # ── Stage 3: Runtime ──
 FROM node:20-alpine AS runner
 WORKDIR /app
