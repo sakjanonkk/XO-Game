@@ -1,36 +1,96 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# XO Game — Tic-Tac-Toe
+
+A production-quality Tic-Tac-Toe web application built with Next.js 16, featuring an unbeatable AI opponent, real-time game state management, parallax landing page, and match history.
+
+## Tech Stack
+
+- **Framework:** Next.js 16 (App Router, Turbopack)
+- **Language:** TypeScript (strict mode)
+- **Styling:** Tailwind CSS v4 with custom design tokens
+- **Icons:** Lucide React
+- **Fonts:** Space Grotesk (headings) + Inter (body) via `next/font`
+- **State:** React hooks + server-validated game state
+- **Package Manager:** pnpm
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+# Install dependencies
+pnpm install
+
+# Start dev server
 pnpm dev
-# or
-bun dev
+
+# Type check
+pnpm type-check
+
+# Lint
+pnpm lint
+
+# Production build
+pnpm build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to view the app.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+src/
+├── app/                        # Next.js App Router
+│   ├── layout.tsx              # Root layout with fonts and metadata
+│   ├── page.tsx                # Landing page (parallax hero)
+│   ├── game/
+│   │   ├── page.tsx            # Game page (client component)
+│   │   ├── loading.tsx         # Loading skeleton
+│   │   └── error.tsx           # Error boundary
+│   └── api/game/               # RESTful API routes
+│       ├── route.ts            # POST: create game
+│       ├── [id]/route.ts       # GET: game state, PUT: make move
+│       └── history/route.ts    # GET: match history
+├── components/
+│   ├── ui/                     # Button, Modal
+│   ├── game/                   # Board, Cell, ScoreBoard, GameStatus, HistoryPanel
+│   ├── landing/                # Hero, Features, HowToPlay, Footer
+│   └── layout/                 # Navbar
+├── hooks/
+│   ├── useGame.ts              # Game state management
+│   ├── useParallax.ts          # CSS transform parallax effect
+│   └── useScrollAnimation.ts   # Intersection Observer animations
+├── lib/
+│   ├── game-engine.ts          # Pure game logic + minimax AI
+│   ├── game-repository.ts      # Repository pattern (in-memory storage)
+│   ├── api-client.ts           # Typed fetch wrapper
+│   └── utils.ts                # cn() helper, ID generation
+├── types/
+│   └── game.ts                 # All TypeScript interfaces
+└── styles/
+    └── globals.css             # Design tokens, animations, Tailwind config
+```
 
-## Learn More
+## Design Decisions
 
-To learn more about Next.js, take a look at the following resources:
+### Architecture
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Server-validated moves:** All game moves go through the API, which validates turns, checks for winners, and runs AI logic server-side. The client is a thin presentation layer.
+- **Repository pattern:** Game storage uses an interface (`GameRepository`) with an in-memory implementation. A database (Postgres, Redis) can be swapped in by implementing the same interface.
+- **Pure game engine:** All game logic (`checkWinner`, `minimax`, etc.) lives in `game-engine.ts` as pure functions with no side effects — easy to test and reason about.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### AI
 
-## Deploy on Vercel
+- **Hard mode:** Minimax algorithm with alpha-beta pruning. Evaluates all possible game states to find the optimal move. Unbeatable.
+- **Easy mode:** Random move selection from available cells.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### UI/UX
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **SVG mark animations:** X and O marks are drawn with CSS `stroke-dashoffset` animations for a satisfying hand-drawn feel.
+- **Parallax landing page:** CSS transforms + requestAnimationFrame. Automatically disabled on mobile and when `prefers-reduced-motion` is set.
+- **Scroll animations:** Intersection Observer triggers entrance animations for feature cards and content sections.
+- **Design tokens:** CSS custom properties define the color palette, enabling easy theming.
+
+### Performance
+
+- `React.memo` on Board and Cell components to prevent unnecessary re-renders
+- Passive scroll listeners for parallax
+- `requestAnimationFrame` for smooth scroll-linked animations
+- Server Components used for landing page sections where possible
