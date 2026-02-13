@@ -69,7 +69,7 @@ export function MoveTimer({ duration, onTimeout }: MoveTimerProps) {
             className={
               isLow
                 ? 'text-red-500 transition-all duration-1000'
-                : 'text-indigo-500 transition-all duration-1000'
+                : 'text-amber-500 transition-all duration-1000'
             }
           />
         </svg>

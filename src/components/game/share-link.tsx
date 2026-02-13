@@ -40,11 +40,11 @@ export function ShareLink({ gameId, className }: ShareLinkProps) {
   return (
     <div
       className={cn(
-        'rounded-xl border border-indigo-200 bg-indigo-50/50 p-4',
+        'rounded-xl border border-amber-200 bg-amber-50/50 p-4',
         className,
       )}
     >
-      <div className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-indigo-600">
+      <div className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-amber-600">
         <Link className="h-3.5 w-3.5" />
         Share with opponent
       </div>
@@ -54,7 +54,7 @@ export function ShareLink({ gameId, className }: ShareLinkProps) {
           type="text"
           readOnly
           value={url}
-          className="flex-1 rounded-lg border border-indigo-200 bg-white px-3 py-2 text-sm text-slate-700 outline-none"
+          className="flex-1 rounded-lg border border-amber-200 bg-white px-3 py-2 text-sm text-slate-700 outline-none"
           onFocus={(e) => e.target.select()}
         />
         <button
@@ -63,7 +63,7 @@ export function ShareLink({ gameId, className }: ShareLinkProps) {
             'flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200',
             copied
               ? 'bg-emerald-500 text-white'
-              : 'bg-indigo-600 text-white hover:bg-indigo-700',
+              : 'bg-amber-600 text-white hover:bg-amber-700',
           )}
         >
           {copied ? (

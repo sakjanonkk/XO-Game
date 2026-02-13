@@ -8,10 +8,6 @@ interface UseScrollAnimationOptions {
   triggerOnce?: boolean;
 }
 
-/**
- * Custom hook using Intersection Observer for scroll-triggered animations.
- * Returns a ref to attach and a boolean indicating visibility.
- */
 export function useScrollAnimation<T extends HTMLElement = HTMLDivElement>(
   options: UseScrollAnimationOptions = {},
 ): {

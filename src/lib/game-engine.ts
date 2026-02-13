@@ -49,11 +49,6 @@ export function isValidMove(board: Board, position: number): boolean {
   return position >= 0 && position < 9 && board[position] === null;
 }
 
-/**
- * Minimax algorithm with alpha-beta pruning for optimal AI play.
- * Returns a score: +10 for AI win, -10 for opponent win, 0 for draw.
- * Depth is subtracted from the score to prefer faster wins.
- */
 function minimax(
   board: Board,
   depth: number,

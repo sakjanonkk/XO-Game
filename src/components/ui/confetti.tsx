@@ -16,13 +16,13 @@ interface Particle {
 }
 
 const COLORS = [
-  '#6366f1', // indigo
-  '#818cf8', // indigo light
-  '#f59e0b', // amber
-  '#fbbf24', // amber light
+  '#d97706', // amber
+  '#f59e0b', // amber light
+  '#ea580c', // orange
+  '#fb923c', // orange light
   '#10b981', // emerald
   '#ec4899', // pink
-  '#8b5cf6', // violet
+  '#f97316', // orange vivid
   '#06b6d4', // cyan
 ];
 

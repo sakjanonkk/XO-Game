@@ -13,9 +13,9 @@ interface Feature {
 const features: Feature[] = [
   {
     icon: <Bot className="h-6 w-6" />,
-    title: 'Smart AI Opponent',
+    title: 'Smart Bot Opponent',
     description:
-      'Face an unbeatable minimax AI on hard mode, or ease in with random moves on easy mode.',
+      'Face an unbeatable minimax bot on hard mode, or ease in with random moves on easy mode.',
   },
   {
     icon: <Activity className="h-6 w-6" />,
@@ -44,7 +44,7 @@ export function Features() {
       <div
         className="absolute inset-0 -z-10"
         style={{
-          background: 'linear-gradient(180deg, transparent, rgba(79,70,229,0.02) 50%, transparent)',
+          background: 'linear-gradient(180deg, transparent, rgba(217,119,6,0.02) 50%, transparent)',
         }}
         aria-hidden="true"
       />
@@ -73,7 +73,7 @@ function SectionHeader() {
         isVisible ? 'scroll-visible' : 'scroll-hidden',
       )}
     >
-      <span className="text-xs font-semibold uppercase tracking-widest text-indigo-600">
+      <span className="text-xs font-semibold uppercase tracking-widest text-amber-600">
         Features
       </span>
       <h2
@@ -98,12 +98,12 @@ function FeatureCard({ feature, index }: { feature: Feature; index: number }) {
       className={cn(
         'group relative rounded-2xl border border-slate-200/80 bg-white p-6 sm:p-8',
         'transition-all duration-500',
-        'hover:border-indigo-200 hover:shadow-lg hover:shadow-indigo-100/40',
+        'hover:border-amber-200 hover:shadow-lg hover:shadow-amber-100/40',
         isVisible ? 'scroll-visible' : 'scroll-hidden',
       )}
       style={{ transitionDelay: isVisible ? `${index * 100}ms` : '0ms' }}
     >
-      <div className="mb-4 inline-flex rounded-xl bg-indigo-50 p-3 text-indigo-600 transition-colors group-hover:bg-indigo-100">
+      <div className="mb-4 inline-flex rounded-xl bg-amber-50 p-3 text-amber-600 transition-colors group-hover:bg-amber-100">
         {feature.icon}
       </div>
       <h3 className="text-lg font-semibold text-slate-900">{feature.title}</h3>

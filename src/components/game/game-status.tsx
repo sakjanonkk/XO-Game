@@ -12,7 +12,7 @@ export function GameStatus({ game, className }: GameStatusProps) {
   const getMessage = (): { text: string; highlight: boolean } => {
     if (game.status === 'won') {
       const winnerLabel = game.mode === 'ai'
-        ? game.winner === 'X' ? 'You win!' : 'AI wins!'
+        ? game.winner === 'X' ? 'You win!' : 'Bot wins!'
         : `Player ${game.winner} wins!`;
       return { text: winnerLabel, highlight: true };
     }
@@ -23,7 +23,7 @@ export function GameStatus({ game, className }: GameStatusProps) {
 
     if (game.mode === 'ai') {
       return {
-        text: game.currentPlayer === 'X' ? 'Your turn' : 'AI is thinking...',
+        text: game.currentPlayer === 'X' ? 'Your turn' : 'Bot is thinking...',
         highlight: false,
       };
     }
@@ -42,7 +42,7 @@ export function GameStatus({ game, className }: GameStatusProps) {
         'flex items-center justify-center rounded-xl px-6 py-3',
         'transition-all duration-300 ease-out',
         highlight
-          ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20 animate-bounce-subtle'
+          ? 'bg-amber-600 text-white shadow-lg shadow-amber-600/20 animate-bounce-subtle'
           : 'bg-white text-slate-700 border border-slate-200 shadow-sm',
         className,
       )}

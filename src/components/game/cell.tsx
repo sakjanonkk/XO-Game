@@ -72,20 +72,20 @@ const Cell = memo(function Cell({
         'relative flex items-center justify-center',
         'aspect-square w-full rounded-xl',
         'transition-all duration-200 ease-out',
-        'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500',
+        'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500',
         // Base state
         !value && !isDisabled && [
-          'bg-white hover:bg-indigo-50 hover:scale-[1.03]',
+          'bg-white hover:bg-amber-50 hover:scale-[1.03]',
           'cursor-pointer active:scale-95',
           'shadow-sm hover:shadow-md',
-          'border border-slate-200 hover:border-indigo-300',
+          'border border-slate-200 hover:border-amber-300',
         ],
         // Filled state
         value && 'bg-white shadow-sm border border-slate-200',
         // Disabled empty cell
         !value && isDisabled && 'bg-slate-50 cursor-not-allowed border border-slate-100',
         // Winning cell highlight
-        isWinningCell && 'bg-indigo-50 border-indigo-400 shadow-md shadow-indigo-200/50 scale-[1.05]',
+        isWinningCell && 'bg-amber-50 border-amber-400 shadow-md shadow-amber-200/50 scale-[1.05]',
       )}
       onClick={() => onClick(position)}
       disabled={isDisabled || !!value}
@@ -96,16 +96,16 @@ const Cell = memo(function Cell({
       {value === 'X' && (
         <XMark
           className={cn(
-            'text-indigo-600',
-            isWinningCell && 'text-indigo-700',
+            'text-amber-600',
+            isWinningCell && 'text-amber-700',
           )}
         />
       )}
       {value === 'O' && (
         <OMark
           className={cn(
-            'text-amber-500',
-            isWinningCell && 'text-amber-600',
+            'text-indigo-500',
+            isWinningCell && 'text-indigo-600',
           )}
         />
       )}

@@ -73,7 +73,6 @@ export default function GamePage() {
 
   return (
     <main className="relative min-h-screen bg-[var(--color-bg)]">
-      {/* Top bar */}
       <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/80 backdrop-blur-md">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3">
           <Link
@@ -106,7 +105,6 @@ export default function GamePage() {
       </header>
 
       <div className="mx-auto max-w-md px-4 py-8 sm:py-12">
-        {/* Game setup — shown when no active game */}
         {!game && (
           <div className="animate-slide-up space-y-8">
             <div className="text-center">
@@ -121,7 +119,6 @@ export default function GamePage() {
               </p>
             </div>
 
-            {/* Mode selector */}
             <div className="space-y-3">
               <label className="text-xs font-semibold uppercase tracking-wider text-slate-400">
                 Game Mode
@@ -129,8 +126,8 @@ export default function GamePage() {
               <div className="grid grid-cols-2 gap-3">
                 <ModeButton
                   icon={<Bot className="h-5 w-5" />}
-                  label="vs AI"
-                  description="Challenge the computer"
+                  label="vs Bot"
+                  description="Challenge the bot"
                   isSelected={selectedMode === 'ai'}
                   onClick={() => setSelectedMode('ai')}
                 />
@@ -148,7 +145,7 @@ export default function GamePage() {
             {selectedMode === 'ai' && (
               <div className="space-y-3 animate-fade-in">
                 <label className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-                  AI Difficulty
+                  Bot Difficulty
                 </label>
                 <div className="grid grid-cols-2 gap-3">
                   <DifficultyButton
@@ -159,7 +156,7 @@ export default function GamePage() {
                   />
                   <DifficultyButton
                     label="Hard"
-                    description="Unbeatable AI"
+                    description="Unbeatable bot"
                     isSelected={selectedDifficulty === 'hard'}
                     onClick={() => setSelectedDifficulty('hard')}
                   />
@@ -167,7 +164,6 @@ export default function GamePage() {
               </div>
             )}
 
-            {/* Start button */}
             <Button
               size="lg"
               className="w-full animate-pulse-glow"
@@ -180,28 +176,23 @@ export default function GamePage() {
           </div>
         )}
 
-        {/* Active game */}
         {game && (
           <div className="space-y-6 animate-scale-in">
-            {/* Share link for PvP */}
             {isPvpOnline && <ShareLink gameId={game.id} />}
 
-            {/* Role badge for PvP */}
             {isPvpOnline && (
               <div className="flex justify-center">
-                <span className="rounded-full bg-indigo-100 px-3 py-1 text-xs font-semibold text-indigo-700">
+                <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
                   You are X
                 </span>
               </div>
             )}
 
-            {/* Score */}
             <ScoreBoard score={score} className="justify-center" />
 
-            {/* Status */}
             {waitingForOpponent ? (
               <div className="flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-6 py-3 shadow-sm">
-                <Loader2 className="h-4 w-4 animate-spin text-indigo-500" />
+                <Loader2 className="h-4 w-4 animate-spin text-amber-500" />
                 <span className="text-sm font-medium text-slate-600">
                   Waiting for O to play...
                 </span>
@@ -210,7 +201,6 @@ export default function GamePage() {
               <GameStatus game={game} />
             )}
 
-            {/* Move Timer — key changes each move to reset the countdown */}
             {game.status === 'playing' && !waitingForOpponent && (
               <MoveTimer
                 key={game.moves.length}
@@ -219,7 +209,6 @@ export default function GamePage() {
               />
             )}
 
-            {/* Board */}
             <div
               className="mx-auto w-full max-w-xs rounded-2xl bg-slate-100/60 p-3 sm:max-w-sm sm:p-4"
               style={{ boxShadow: 'var(--shadow-game)' }}
@@ -232,11 +221,10 @@ export default function GamePage() {
               />
             </div>
 
-            {/* Game info */}
             <div className="flex items-center justify-center gap-2 text-xs text-slate-400">
               <span className="rounded-full bg-slate-100 px-2.5 py-1">
                 {game.mode === 'ai'
-                  ? `AI (${game.aiDifficulty})`
+                  ? `Bot (${game.aiDifficulty})`
                   : isPvpOnline
                     ? 'Online PvP'
                     : 'Player vs Player'}
@@ -246,12 +234,10 @@ export default function GamePage() {
               </span>
             </div>
 
-            {/* Replay viewer */}
             {isGameFinished && showReplay && (
               <ReplayViewer game={game} onClose={() => setShowReplay(false)} />
             )}
 
-            {/* Actions */}
             <div className="flex items-center justify-center gap-3">
               {isGameFinished && (
                 <>
@@ -277,16 +263,12 @@ export default function GamePage() {
         )}
       </div>
 
-      {/* History sidebar */}
       <HistoryPanel isOpen={historyOpen} onClose={() => setHistoryOpen(false)} />
 
-      {/* Win celebration */}
       <Confetti active={game?.status === 'won'} />
     </main>
   );
 }
-
-/* ─── Sub-components ─── */
 
 function ModeButton({
   icon,
@@ -308,7 +290,7 @@ function ModeButton({
         'flex flex-col items-center gap-2 rounded-xl px-4 py-5 text-center transition-all duration-200',
         'border-2',
         isSelected
-          ? 'border-indigo-600 bg-indigo-50 text-indigo-700 shadow-sm'
+          ? 'border-amber-600 bg-amber-50 text-amber-700 shadow-sm'
           : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50',
       )}
     >
@@ -337,7 +319,7 @@ function DifficultyButton({
         'rounded-xl px-4 py-3 text-center transition-all duration-200',
         'border-2',
         isSelected
-          ? 'border-indigo-600 bg-indigo-50 text-indigo-700 shadow-sm'
+          ? 'border-amber-600 bg-amber-50 text-amber-700 shadow-sm'
           : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300',
       )}
     >

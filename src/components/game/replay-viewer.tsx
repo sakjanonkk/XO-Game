@@ -124,7 +124,7 @@ export function ReplayViewer({ game, onClose }: ReplayViewerProps) {
         <span className="text-xs text-slate-400 w-6 text-right">{step}</span>
         <div className="relative h-1.5 flex-1 rounded-full bg-slate-200">
           <div
-            className="absolute inset-y-0 left-0 rounded-full bg-indigo-500 transition-all duration-300"
+            className="absolute inset-y-0 left-0 rounded-full bg-amber-500 transition-all duration-300"
             style={{ width: `${totalSteps > 0 ? (step / totalSteps) * 100 : 0}%` }}
           />
         </div>
@@ -141,7 +141,7 @@ export function ReplayViewer({ game, onClose }: ReplayViewerProps) {
         </ControlButton>
         <button
           onClick={togglePlay}
-          className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-600 text-white hover:bg-indigo-700 transition-colors disabled:opacity-50"
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-600 text-white hover:bg-amber-700 transition-colors disabled:opacity-50"
           aria-label={isPlaying ? 'Pause' : 'Play'}
         >
           {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4 ml-0.5" />}

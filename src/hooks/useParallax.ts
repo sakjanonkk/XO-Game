@@ -7,11 +7,6 @@ interface ParallaxLayer {
   speed: number;
 }
 
-/**
- * Custom hook for parallax scrolling effects.
- * Uses CSS transforms + requestAnimationFrame for smooth performance.
- * Automatically disabled on mobile and when prefers-reduced-motion is set.
- */
 export function useParallax(): {
   containerRef: React.RefObject<HTMLDivElement | null>;
   registerLayer: (element: HTMLElement | null, speed: number) => void;

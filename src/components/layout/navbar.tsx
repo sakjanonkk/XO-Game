@@ -12,7 +12,7 @@ export function Navbar() {
           className="flex items-center gap-2 text-lg font-bold tracking-tight text-slate-900"
           style={{ fontFamily: 'var(--font-heading)' }}
         >
-          <Gamepad2 className="h-5 w-5 text-indigo-600" />
+          <Gamepad2 className="h-5 w-5 text-amber-600" />
           XO Game
         </Link>
 

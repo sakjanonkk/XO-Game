@@ -42,6 +42,7 @@ next-env.d.ts
 
 # docs / interview prep
 XO-Game-Interview-Guide.md
+XO-Game-Interview-Guide.html
 
 # misc text files
 *.text

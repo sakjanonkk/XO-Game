@@ -11,9 +11,9 @@ interface ScoreBoardProps {
 export function ScoreBoard({ score, className }: ScoreBoardProps) {
   return (
     <div className={cn('flex items-center gap-3 sm:gap-5', className)}>
-      <ScoreCard label="X Wins" value={score.x} colorClass="text-indigo-600" />
+      <ScoreCard label="X Wins" value={score.x} colorClass="text-amber-600" />
       <ScoreCard label="Draws" value={score.draws} colorClass="text-slate-500" />
-      <ScoreCard label="O Wins" value={score.o} colorClass="text-amber-500" />
+      <ScoreCard label="O Wins" value={score.o} colorClass="text-indigo-500" />
     </div>
   );
 }

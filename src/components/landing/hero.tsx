@@ -37,7 +37,7 @@ export function Hero() {
         {/* Large faded X top-right */}
         <svg
           viewBox="0 0 100 100"
-          className="absolute -top-8 -right-8 h-64 w-64 text-indigo-600/[0.04] animate-float sm:h-80 sm:w-80"
+          className="absolute -top-8 -right-8 h-64 w-64 text-amber-600/[0.04] animate-float sm:h-80 sm:w-80"
         >
           <line x1="20" y1="20" x2="80" y2="80" stroke="currentColor" strokeWidth="8" strokeLinecap="round" />
           <line x1="80" y1="20" x2="20" y2="80" stroke="currentColor" strokeWidth="8" strokeLinecap="round" />
@@ -46,7 +46,7 @@ export function Hero() {
         {/* Large faded O bottom-left */}
         <svg
           viewBox="0 0 100 100"
-          className="absolute -bottom-12 -left-12 h-72 w-72 text-amber-500/[0.05] animate-float sm:h-96 sm:w-96"
+          className="absolute -bottom-12 -left-12 h-72 w-72 text-indigo-500/[0.05] animate-float sm:h-96 sm:w-96"
           style={{ animationDelay: '2s' }}
         >
           <circle cx="50" cy="50" r="35" fill="none" stroke="currentColor" strokeWidth="7" />
@@ -55,7 +55,7 @@ export function Hero() {
         {/* Small decorative X */}
         <svg
           viewBox="0 0 100 100"
-          className="absolute top-1/3 left-[10%] h-16 w-16 text-indigo-500/[0.06] animate-float"
+          className="absolute top-1/3 left-[10%] h-16 w-16 text-amber-500/[0.06] animate-float"
           style={{ animationDelay: '4s' }}
         >
           <line x1="25" y1="25" x2="75" y2="75" stroke="currentColor" strokeWidth="10" strokeLinecap="round" />
@@ -65,7 +65,7 @@ export function Hero() {
         {/* Small decorative O */}
         <svg
           viewBox="0 0 100 100"
-          className="absolute top-1/4 right-[15%] h-20 w-20 text-amber-400/[0.06] animate-float"
+          className="absolute top-1/4 right-[15%] h-20 w-20 text-indigo-400/[0.06] animate-float"
           style={{ animationDelay: '3s' }}
         >
           <circle cx="50" cy="50" r="30" fill="none" stroke="currentColor" strokeWidth="9" />
@@ -76,7 +76,7 @@ export function Hero() {
       <div
         className="absolute top-0 left-1/2 -z-10 h-[500px] w-[800px] -translate-x-1/2 -translate-y-1/3 rounded-full opacity-[0.08]"
         style={{
-          background: 'radial-gradient(ellipse, #4F46E5 0%, transparent 70%)',
+          background: 'radial-gradient(ellipse, #D97706 0%, transparent 70%)',
         }}
         aria-hidden="true"
       />
@@ -84,7 +84,7 @@ export function Hero() {
       {/* Content */}
       <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
         <div className="animate-slide-up">
-          <span className="mb-4 inline-block rounded-full bg-indigo-100 px-3 py-1 text-xs font-semibold text-indigo-700">
+          <span className="mb-4 inline-block rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
             Classic Reimagined
           </span>
         </div>
@@ -97,7 +97,7 @@ export function Hero() {
           }}
         >
           The Ultimate{' '}
-          <span className="bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
             XO
           </span>{' '}
           Experience
@@ -107,7 +107,7 @@ export function Hero() {
           className="mx-auto mt-5 max-w-xl animate-slide-up text-base leading-relaxed text-slate-600 sm:mt-6 sm:text-lg"
           style={{ animationDelay: '0.2s' }}
         >
-          Challenge an unbeatable AI or play with friends. Beautiful animations,
+          Challenge an unbeatable bot or play with friends. Beautiful animations,
           real-time game tracking, and a satisfying experience — all in your browser.
         </p>
 
@@ -152,10 +152,10 @@ function PreviewBoard() {
           className="flex aspect-square items-center justify-center rounded-lg bg-white shadow-sm text-sm font-bold"
         >
           {cell === 'X' && (
-            <span className="text-indigo-600">X</span>
+            <span className="text-amber-600">X</span>
           )}
           {cell === 'O' && (
-            <span className="text-amber-500">O</span>
+            <span className="text-indigo-500">O</span>
           )}
         </div>
       ))}

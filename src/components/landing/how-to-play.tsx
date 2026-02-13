@@ -14,7 +14,7 @@ const steps: Step[] = [
     number: '01',
     title: 'Choose Your Mode',
     description:
-      'Select Player vs Player to challenge a friend, or Player vs AI to test your skills against the computer.',
+      'Select Player vs Player to challenge a friend, or Player vs Bot to test your skills against the computer.',
   },
   {
     number: '02',
@@ -57,7 +57,7 @@ function SectionHeader() {
         isVisible ? 'scroll-visible' : 'scroll-hidden',
       )}
     >
-      <span className="text-xs font-semibold uppercase tracking-widest text-indigo-600">
+      <span className="text-xs font-semibold uppercase tracking-widest text-amber-600">
         Getting Started
       </span>
       <h2
@@ -85,7 +85,7 @@ function StepCard({ step, index }: { step: Step; index: number }) {
     >
       {/* Step number */}
       <div
-        className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-600 text-xl font-bold text-white shadow-md shadow-indigo-600/20"
+        className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-600 text-xl font-bold text-white shadow-md shadow-amber-600/20"
         style={{ fontFamily: 'var(--font-heading)' }}
       >
         {step.number}

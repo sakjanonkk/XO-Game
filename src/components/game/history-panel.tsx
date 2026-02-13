@@ -67,7 +67,7 @@ export function HistoryPanel({ isOpen, onClose }: HistoryPanelProps) {
         <div className="overflow-y-auto p-4" style={{ height: 'calc(100% - 57px)' }}>
           {isLoading && (
             <div className="flex items-center justify-center py-12">
-              <div className="h-6 w-6 animate-spin rounded-full border-2 border-indigo-200 border-t-indigo-600" />
+              <div className="h-6 w-6 animate-spin rounded-full border-2 border-amber-200 border-t-amber-600" />
             </div>
           )}
 
@@ -98,7 +98,7 @@ export function HistoryPanel({ isOpen, onClose }: HistoryPanelProps) {
                       </span>
                     </div>
                     <span className="rounded-full bg-slate-200/60 px-2 py-0.5 text-xs text-slate-500">
-                      {entry.mode === 'ai' ? `AI (${entry.aiDifficulty})` : 'PvP'}
+                      {entry.mode === 'ai' ? `Bot (${entry.aiDifficulty})` : 'PvP'}
                     </span>
                   </div>
                   <div className="mt-1.5 flex items-center justify-between text-xs text-slate-400">

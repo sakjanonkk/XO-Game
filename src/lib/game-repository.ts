@@ -1,9 +1,5 @@
 import type { Game, GameHistoryEntry } from '@/types/game';
 
-/**
- * Repository interface — abstracts storage so a database
- * (Postgres, Redis, etc.) can replace in-memory storage later.
- */
 export interface GameRepository {
   create(game: Game): Game;
   findById(id: string): Game | undefined;
