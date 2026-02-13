@@ -57,30 +57,3 @@ export async function getHistory(): Promise<GameHistoryEntry[]> {
   return result.data!;
 }
 
-/**
- * Subscribe to real-time game updates via SSE.
- * Returns an unsubscribe function.
- */
-export function subscribeToGame(
-  id: string,
-  onUpdate: (game: Game) => void,
-): () => void {
-  const eventSource = new EventSource(`${BASE_URL}/${id}/stream`);
-
-  eventSource.onmessage = (event) => {
-    try {
-      const game: Game = JSON.parse(event.data);
-      onUpdate(game);
-    } catch {
-      // Ignore parse errors
-    }
-  };
-
-  eventSource.onerror = () => {
-    // EventSource will auto-reconnect
-  };
-
-  return () => {
-    eventSource.close();
-  };
-}

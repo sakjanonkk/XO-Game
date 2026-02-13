@@ -23,12 +23,12 @@ interface UseGameReturn {
 }
 
 interface UseGameOptions {
-  /** When set, enables SSE subscription for real-time updates */
   playerRole?: Player | null;
+  pollInterval?: number;
 }
 
 export function useGame(options: UseGameOptions = {}): UseGameReturn {
-  const { playerRole = null } = options;
+  const { playerRole = null, pollInterval = 1500 } = options;
 
   const [game, setGame] = useState<Game | null>(null);
   const [score, setScore] = useState<GameScore>({ x: 0, o: 0, draws: 0 });
@@ -118,37 +118,39 @@ export function useGame(options: UseGameOptions = {}): UseGameReturn {
     setScore({ x: 0, o: 0, draws: 0 });
   }, []);
 
-  // ── SSE for multiplayer ──
-  // When playerRole is set, subscribe to real-time updates
   useEffect(() => {
     if (!playerRole) return;
 
     const current = gameRef.current;
     if (!current || current.status !== 'playing') return;
 
-    const unsubscribe = api.subscribeToGame(current.id, (updated) => {
+    const interval = setInterval(async () => {
       const prev = gameRef.current;
-      if (!prev) return;
+      if (!prev || prev.status !== 'playing') return;
 
-      // Only update if something changed
-      if (JSON.stringify(updated.board) !== JSON.stringify(prev.board) || updated.status !== prev.status) {
-        // Track score if opponent's move ended the game
-        if (updated.status === 'won' && prev.status === 'playing') {
-          setScore((s) => ({
-            ...s,
-            x: updated.winner === 'X' ? s.x + 1 : s.x,
-            o: updated.winner === 'O' ? s.o + 1 : s.o,
-          }));
-        } else if (updated.status === 'draw' && prev.status === 'playing') {
-          setScore((s) => ({ ...s, draws: s.draws + 1 }));
+      try {
+        const updated = await api.getGame(prev.id);
+
+        if (JSON.stringify(updated.board) !== JSON.stringify(prev.board) || updated.status !== prev.status) {
+          if (updated.status === 'won' && prev.status === 'playing') {
+            setScore((s) => ({
+              ...s,
+              x: updated.winner === 'X' ? s.x + 1 : s.x,
+              o: updated.winner === 'O' ? s.o + 1 : s.o,
+            }));
+          } else if (updated.status === 'draw' && prev.status === 'playing') {
+            setScore((s) => ({ ...s, draws: s.draws + 1 }));
+          }
+
+          setGame(updated);
         }
-
-        setGame(updated);
+      } catch {
+        // Ignore polling errors
       }
-    });
+    }, pollInterval);
 
-    return unsubscribe;
-  }, [playerRole, game?.status]);
+    return () => clearInterval(interval);
+  }, [playerRole, game?.status, pollInterval]);
 
   return {
     game,

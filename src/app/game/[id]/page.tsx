@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState, use } from 'react';
+import { useEffect, useState, use } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Film, Loader2 } from 'lucide-react';
 import { Board } from '@/components/game/board';
@@ -10,10 +10,8 @@ import { ScoreBoard } from '@/components/game/score-board';
 import { GameStatus } from '@/components/game/game-status';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
-import { SoundToggle } from '@/components/ui/sound-toggle';
 import { Confetti } from '@/components/ui/confetti';
 import { useGame } from '@/hooks/useGame';
-import { useSound } from '@/hooks/useSound';
 
 export default function SharedGamePage({
   params,
@@ -28,29 +26,10 @@ export default function SharedGamePage({
   });
 
   const [showReplay, setShowReplay] = useState(false);
-  const { enabled: soundEnabled, play: playSound, toggleSound } = useSound();
-  const prevStatusRef = useRef(game?.status);
 
   useEffect(() => {
     loadGame(id);
   }, [id, loadGame]);
-
-  // Play sound effects when game state changes
-  useEffect(() => {
-    const prevStatus = prevStatusRef.current;
-    const currentStatus = game?.status;
-    prevStatusRef.current = currentStatus;
-
-    if (!prevStatus || prevStatus === currentStatus) return;
-
-    if (currentStatus === 'won') playSound('win');
-    else if (currentStatus === 'draw') playSound('draw');
-  }, [game?.status, playSound]);
-
-  const handleMakeMove = async (position: number) => {
-    playSound('move');
-    await makeMove(position);
-  };
 
   const handleTimeout = () => {
     if (!game || game.status !== 'playing') return;
@@ -59,7 +38,7 @@ export default function SharedGamePage({
       .filter((i) => i !== -1);
     if (emptyCells.length > 0) {
       const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
-      handleMakeMove(randomCell);
+      makeMove(randomCell);
     }
   };
 
@@ -124,7 +103,6 @@ export default function SharedGamePage({
           </h1>
 
           <div className="flex items-center gap-2">
-            <SoundToggle enabled={soundEnabled} onToggle={toggleSound} />
             <ThemeToggle />
             <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
               You are O
@@ -168,7 +146,7 @@ export default function SharedGamePage({
               board={game.board}
               winningLine={game.winningLine}
               isDisabled={!isMyTurn || isLoading}
-              onCellClick={handleMakeMove}
+              onCellClick={makeMove}
             />
           </div>
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import {
   ArrowLeft,
@@ -22,10 +22,8 @@ import { HistoryPanel } from '@/components/game/history-panel';
 import { ShareLink } from '@/components/game/share-link';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
-import { SoundToggle } from '@/components/ui/sound-toggle';
 import { Confetti } from '@/components/ui/confetti';
 import { useGame } from '@/hooks/useGame';
-import { useSound } from '@/hooks/useSound';
 import { cn } from '@/lib/utils';
 import type { AIDifficulty, GameMode, Player } from '@/types/game';
 
@@ -35,26 +33,6 @@ export default function GamePage() {
   const { game, score, isLoading, startGame, makeMove, resetGame, resetScore } =
     useGame({ playerRole });
 
-  const { enabled: soundEnabled, play: playSound, toggleSound } = useSound();
-  const prevStatusRef = useRef(game?.status);
-
-  // Play sound effects when game state changes
-  useEffect(() => {
-    const prevStatus = prevStatusRef.current;
-    const currentStatus = game?.status;
-    prevStatusRef.current = currentStatus;
-
-    if (!prevStatus || prevStatus === currentStatus) return;
-
-    if (currentStatus === 'won') playSound('win');
-    else if (currentStatus === 'draw') playSound('draw');
-  }, [game?.status, playSound]);
-
-  const handleMakeMove = async (position: number) => {
-    playSound('move');
-    await makeMove(position);
-  };
-
   const handleTimeout = () => {
     if (!game || game.status !== 'playing') return;
     const emptyCells = game.board
@@ -62,7 +40,7 @@ export default function GamePage() {
       .filter((i) => i !== -1);
     if (emptyCells.length > 0) {
       const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
-      handleMakeMove(randomCell);
+      makeMove(randomCell);
     }
   };
 
@@ -114,7 +92,6 @@ export default function GamePage() {
           </h1>
 
           <div className="flex items-center gap-1">
-            <SoundToggle enabled={soundEnabled} onToggle={toggleSound} />
             <ThemeToggle />
             <button
               onClick={() => setHistoryOpen(true)}
@@ -251,7 +228,7 @@ export default function GamePage() {
                 board={game.board}
                 winningLine={game.winningLine}
                 isDisabled={!isMyTurn || isLoading}
-                onCellClick={handleMakeMove}
+                onCellClick={makeMove}
               />
             </div>
 
