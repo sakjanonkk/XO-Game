@@ -1,4 +1,4 @@
-import { Gamepad2 } from 'lucide-react';
+import { Gamepad2 } from "lucide-react";
 
 export function Footer() {
   return (
@@ -7,12 +7,12 @@ export function Footer() {
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
           <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
             <Gamepad2 className="h-4 w-4 text-amber-600" />
-            <span style={{ fontFamily: 'var(--font-heading)' }}>XO Game</span>
+            <span style={{ fontFamily: "var(--font-heading)" }}>XO Game</span>
           </div>
 
-          <p className="text-xs text-slate-400">
+          {/* <p className="text-xs text-slate-400">
             Built with Next.js, TypeScript & Tailwind CSS
-          </p>
+          </p> */}
         </div>
       </div>
     </footer>

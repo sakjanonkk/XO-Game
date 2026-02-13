@@ -17,7 +17,7 @@ const spaceGrotesk = Space_Grotesk({
 export const metadata: Metadata = {
   title: 'XO Game — Tic-Tac-Toe',
   description:
-    'A beautifully crafted Tic-Tac-Toe game with bot opponent, real-time game state, and match history. Built with Next.js.',
+    'Tic-Tac-Toe with online PvP and a minimax bot. Built with Next.js, TypeScript, and Tailwind CSS.',
   keywords: ['tic-tac-toe', 'xo game', 'next.js', 'react', 'bot'],
 };
 

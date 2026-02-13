@@ -85,7 +85,7 @@ export function Hero() {
       <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
         <div className="animate-slide-up">
           <span className="mb-4 inline-block rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
-            Classic Reimagined
+            Tic-Tac-Toe
           </span>
         </div>
 
@@ -96,19 +96,19 @@ export function Hero() {
             animationDelay: '0.1s',
           }}
         >
-          The Ultimate{' '}
+          Play{' '}
           <span className="bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
             XO
           </span>{' '}
-          Experience
+          Online
         </h1>
 
         <p
           className="mx-auto mt-5 max-w-xl animate-slide-up text-base leading-relaxed text-slate-600 sm:mt-6 sm:text-lg"
           style={{ animationDelay: '0.2s' }}
         >
-          Challenge an unbeatable bot or play with friends. Beautiful animations,
-          real-time game tracking, and a satisfying experience — all in your browser.
+          Play against a minimax bot or challenge friends online.
+          Built with Next.js and server-sent events.
         </p>
 
         <div
@@ -125,7 +125,7 @@ export function Hero() {
             href="#features"
             className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors"
           >
-            Learn more
+            See features
           </a>
         </div>
 

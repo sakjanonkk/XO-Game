@@ -6,13 +6,18 @@ type Theme = 'light' | 'dark';
 
 const STORAGE_KEY = 'xo-theme';
 
-function getInitialTheme(): Theme {
-  if (typeof window === 'undefined') return 'light';
-  return (localStorage.getItem(STORAGE_KEY) as Theme) || 'light';
-}
-
 export function useTheme() {
-  const [theme, setTheme] = useState<Theme>(getInitialTheme);
+  const [theme, setTheme] = useState<Theme>('light');
+  const [mounted, setMounted] = useState(false);
+
+  // Read stored theme after hydration
+  useEffect(() => {
+    const stored = localStorage.getItem(STORAGE_KEY) as Theme | null;
+    if (stored === 'dark') {
+      setTheme('dark');
+    }
+    setMounted(true);
+  }, []);
 
   // Sync the data-theme attribute whenever theme changes
   useEffect(() => {
@@ -27,5 +32,5 @@ export function useTheme() {
     });
   }, []);
 
-  return { theme, toggle };
+  return { theme, toggle, mounted };
 }
