@@ -1,6 +1,7 @@
-import type { Board, CellValue, Player } from '@/types/game';
+import type { Board, CellValue, Player } from "@/types/game";
 
 const WINNING_LINES: readonly number[][] = [
+  //WINNING_LINES = แถวที่ชนะได้
   [0, 1, 2], // top row
   [3, 4, 5], // middle row
   [6, 7, 8], // bottom row
@@ -16,7 +17,9 @@ export function createEmptyBoard(): Board {
 }
 
 export function checkWinner(board: Board): Player | null {
+  // winner func
   for (const [a, b, c] of WINNING_LINES) {
+    // loop 8 line until find winner
     if (board[a] && board[a] === board[b] && board[a] === board[c]) {
       return board[a];
     }
@@ -25,6 +28,7 @@ export function checkWinner(board: Board): Player | null {
 }
 
 export function getWinningLine(board: Board): number[] | null {
+  // check which line is winning for ui show
   for (const line of WINNING_LINES) {
     const [a, b, c] = line;
     if (board[a] && board[a] === board[b] && board[a] === board[c]) {
@@ -35,7 +39,7 @@ export function getWinningLine(board: Board): number[] | null {
 }
 
 export function checkDraw(board: Board): boolean {
-  return !checkWinner(board) && board.every((cell) => cell !== null);
+  return !checkWinner(board) && board.every((cell) => cell !== null); //check not winner and not empty cell
 }
 
 export function getAvailableMoves(board: Board): number[] {
@@ -49,6 +53,7 @@ export function isValidMove(board: Board, position: number): boolean {
   return position >= 0 && position < 9 && board[position] === null;
 }
 
+//best move for bot use minimax algorithm function
 function minimax(
   board: Board,
   depth: number,
@@ -57,9 +62,12 @@ function minimax(
   alpha: number,
   beta: number,
 ): number {
-  const opponent: Player = aiPlayer === 'X' ? 'O' : 'X';
+  const opponent: Player = aiPlayer === "X" ? "O" : "X";
   const winner = checkWinner(board);
 
+  //Bot ชนะ  = +10 - depth   (ชนะเร็ว = คะแนนมากกว่า)
+  // Bot แพ้  = depth - 10     (แพ้ช้า = เสียน้อยกว่า)
+  // เสมอ     = 0
   if (winner === aiPlayer) return 10 - depth;
   if (winner === opponent) return depth - 10;
   if (checkDraw(board)) return 0;
